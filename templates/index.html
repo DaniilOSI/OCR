@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@scldck — OCR и транскрибация</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="header">
+    <h1>@scldck</h1>
+    <p>OCR и работа с документами</p>
+</div>
+
+<div class="main-content">
+    <div class="container">
+        <div class="drop" id="dropzone">
+            <span>Перетащите PDF/изображения сюда или кликните</span>
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif" multiple>
+        </div>
+
+        <div class="options">
+            <div id="fileCount">(0 файлов добавлено)</div>
+            <div id="ocrLangGroup" style="margin-top: 12px;">
+                <span style="display:block; margin-bottom:6px; color:#f6da9d;">Язык OCR:</span>
+                <label class="custom-checkbox" title="Русский">
+                    <input type="checkbox" class="ocrLang" value="rus" checked>
+                    <span class="checkmark"><span class="tick"></span></span> Русский
+                </label>
+                <label class="custom-checkbox" title="Английский">
+                    <input type="checkbox" class="ocrLang" value="eng" checked>
+                    <span class="checkmark"><span class="tick"></span></span> Английский
+                </label>
+                <label class="custom-checkbox" title="Узбекский (латиница)">
+                    <input type="checkbox" class="ocrLang" value="uzb">
+                    <span class="checkmark"><span class="tick"></span></span> Узбекский (лат.)
+                </label>
+                <label class="custom-checkbox" title="Узбекский (кириллица)">
+                    <input type="checkbox" class="ocrLang" value="uzb_cyrl">
+                    <span class="checkmark"><span class="tick"></span></span> Узбекский (кирилл.)
+                </label>
+            </div>
+        </div>
+
+        <button id="startBtn">Convert to OCR</button>
+        <button id="clearBtn" style="display:none; margin-left: 10px;">Очистить всё</button>
+
+        <ul id="fileList"></ul>
+        <button id="showMoreBtn" style="display:none;">Показать все</button>
+        
+        <div id="progressContainer" style="display:none;">
+            <div id="progressBar"></div>
+            <div id="progressText">0%</div>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+</div>
+
+<!-- Pop-up для выбора формата -->
+<div id="formatPopup" class="modal-overlay" style="display:none;">
+    <div class="modal">
+        <h3>Выберите формат результата</h3>
+        <form id="formatForm">
+            <label class="custom-checkbox">
+                <input type="checkbox" name="fmt" value="pdf" checked>
+                <span class="checkmark"><span class="tick"></span></span> PDF
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" name="fmt" value="txt">
+                <span class="checkmark"><span class="tick"></span></span> TXT
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" name="archive" value="1">
+                <span class="checkmark"><span class="tick"></span></span> Скачать как архив (ZIP)
+            </label>
+            <div style="text-align:right; margin-top:24px;">
+                <button type="button" id="formatCancel">Отмена</button>
+                <button type="submit" id="formatOk" style="margin-left:14px;">ОК</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
