@@ -8,78 +8,103 @@
 </head>
 <body>
 
+<!-- FAQ модалка -->
 <div class="header">
     <h1>@scldck</h1>
     <p>OCR и работа с документами</p>
+    <button class="faq-btn" id="faqBtn">⚠ FAQ</button>
 </div>
 
 <div class="main-content">
+    <div class="sidebar">
+        <button class="menu-btn active" data-target="ocrBlock">OCR</button>
+        <button class="menu-btn" data-target="transcribeBlock">Транскрибация аудио</button>
+    </div>
+
     <div class="container">
-        <div class="drop" id="dropzone">
-            <span>Перетащите PDF/изображения сюда или кликните</span>
-            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif" multiple>
-        </div>
-
-        <div class="options">
-            <div id="fileCount">(0 файлов добавлено)</div>
-            <div id="ocrLangGroup" style="margin-top: 12px;">
-                <span style="display:block; margin-bottom:6px; color:#f6da9d;">Язык OCR:</span>
-                <label class="custom-checkbox" title="Русский">
-                    <input type="checkbox" class="ocrLang" value="rus" checked>
-                    <span class="checkmark"><span class="tick"></span></span> Русский
-                </label>
-                <label class="custom-checkbox" title="Английский">
-                    <input type="checkbox" class="ocrLang" value="eng" checked>
-                    <span class="checkmark"><span class="tick"></span></span> Английский
-                </label>
-                <label class="custom-checkbox" title="Узбекский (латиница)">
-                    <input type="checkbox" class="ocrLang" value="uzb">
-                    <span class="checkmark"><span class="tick"></span></span> Узбекский (лат.)
-                </label>
-                <label class="custom-checkbox" title="Узбекский (кириллица)">
-                    <input type="checkbox" class="ocrLang" value="uzb_cyrl">
-                    <span class="checkmark"><span class="tick"></span></span> Узбекский (кирилл.)
-                </label>
+        <!-- ===== OCR ===== -->
+        <div id="ocrBlock" class="content-block">
+            <div class="drop" id="dropzone">
+                <span>Перетащите PDF/изображения сюда или кликните</span>
+                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif" multiple>
             </div>
+
+            <div class="options">
+                <div id="fileCount">(0 файлов добавлено)</div>
+                <div id="ocrLangGroup">
+                    <span style="display:block; margin-bottom:6px; color:#f6da9d;">Язык OCR:</span>
+                    <label class="custom-checkbox"><input type="checkbox" class="ocrLang" value="rus" checked><span class="checkmark"><span class="tick"></span></span> Русский</label>
+                    <label class="custom-checkbox"><input type="checkbox" class="ocrLang" value="eng" checked><span class="checkmark"><span class="tick"></span></span> Английский</label>
+                    <label class="custom-checkbox"><input type="checkbox" class="ocrLang" value="uzb"><span class="checkmark"><span class="tick"></span></span> Узбекский (лат.)</label>
+                    <label class="custom-checkbox"><input type="checkbox" class="ocrLang" value="uzb_cyrl"><span class="checkmark"><span class="tick"></span></span> Узбекский (кирилл.)</label>
+                </div>
+            </div>
+
+            <div class="ocr-buttons">
+                <button id="clearBtn" style="display:none; margin-right: 10px;">Очистить всё</button>
+                <button id="startBtn">Convert to OCR</button>
+            </div>
+
+            <ul id="fileList"></ul>
+            <button id="showMoreBtn" style="display:none;">Показать все</button>
+
+            <div id="progressContainer" style="display:none;">
+                <div id="progressBar"></div>
+                <div id="progressText">0%</div>
+            </div>
+            <div id="status"></div>
         </div>
 
-        <button id="startBtn">Convert to OCR</button>
-        <button id="clearBtn" style="display:none; margin-left: 10px;">Очистить всё</button>
+        <!-- ===== Транскрибация аудио ===== -->
+        <div id="transcribeBlock" class="content-block" style="display:none;">
+            <div class="drop" id="audioDrop">
+                <span>Перетащите аудиофайл сюда или кликните</span>
+                <input type="file" id="audioInput" accept=".mp3,.wav,.m4a,.ogg,.flac">
+            </div>
 
-        <ul id="fileList"></ul>
-        <button id="showMoreBtn" style="display:none;">Показать все</button>
-        
-        <div id="progressContainer" style="display:none;">
-            <div id="progressBar"></div>
-            <div id="progressText">0%</div>
+            <div class="audio-buttons">
+                <button id="clearAudioBtn" style="display:none; margin-right:10px;">Очистить</button>
+                <button id="startTranscribeBtn">Транскрибировать в Word</button>
+            </div>
+
+            <ul id="audioFileList"></ul>
+            <div id="transcribeStatus" style="margin-top:10px;"></div>
         </div>
-        
-        <div id="status"></div>
     </div>
 </div>
 
-<!-- Pop-up для выбора формата -->
+<!-- Pop-up выбора формата PDF/TXT -->
 <div id="formatPopup" class="modal-overlay" style="display:none;">
     <div class="modal">
         <h3>Выберите формат результата</h3>
         <form id="formatForm">
-            <label class="custom-checkbox">
-                <input type="checkbox" name="fmt" value="pdf" checked>
-                <span class="checkmark"><span class="tick"></span></span> PDF
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" name="fmt" value="txt">
-                <span class="checkmark"><span class="tick"></span></span> TXT
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" name="archive" value="1">
-                <span class="checkmark"><span class="tick"></span></span> Скачать как архив (ZIP)
-            </label>
+            <label class="custom-checkbox"><input type="checkbox" name="fmt" value="pdf" checked><span class="checkmark"><span class="tick"></span></span> PDF</label>
+            <label class="custom-checkbox"><input type="checkbox" name="fmt" value="txt"><span class="checkmark"><span class="tick"></span></span> TXT</label>
+            <label class="custom-checkbox"><input type="checkbox" name="archive" value="1"><span class="checkmark"><span class="tick"></span></span> Скачать как архив (ZIP)</label>
             <div style="text-align:right; margin-top:24px;">
                 <button type="button" id="formatCancel">Отмена</button>
                 <button type="submit" id="formatOk" style="margin-left:14px;">ОК</button>
             </div>
         </form>
+    </div>
+</div>
+
+
+
+<!-- FAQ модалка -->
+<div id="faqModal" class="modal-overlay" style="display:none;">
+    <div class="modal">
+        <h3>FAQ / Бета</h3>
+        <div class="faq-text">
+            <p>- Это бета-версия сайта. Возможны ошибки, нестабильная работа и ограничения.</p>
+            <p>- Рекомендуемое количество файлов одновременно: 10.</p>
+            <p>- Ограничение на размер файла: 40 МБ на один файл.</p>
+            <p>- OCR: поддерживаются PDF, JPG, PNG, TIFF.</p>
+            <p>- Транскрибация: поддерживаются MP3, WAV, M4A, OGG, FLAC.</p>
+        </div>
+        <div style="text-align:right; margin-top:20px;">
+            <button id="faqClose">Закрыть</button>
+        </div>
     </div>
 </div>
 
